@@ -4,36 +4,104 @@ import DatePicker from 'react-datepicker';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
+import './Register.css';
+import axios from 'axios';
 
 const RegistrationForm = (props) => {
-	const [ selectedDOB, setSelectedDOB ] = useState(null);
-	const [ selectedDOJ, setSelectedDOJ ] = useState(null);
-	// const [ userData, setUserData ] = useState();
+	const [ userData, setUserData ] = useState({
+		email: '',
+		password: '',
+		fullName: '',
+		address: '',
+		mobile: '',
+		gender: '',
+		dob: null,
+		doj: null,
+		type: ''
+	});
 	const navigate = useNavigate();
 	const [ showPassword, setShowPassword ] = useState('password');
+
 	const navigateToLogin = () => {
 		navigate('/login');
 	};
-	const onSubmitHandler = (e) => {
+
+	const submitHandler = async (e) => {
 		e.preventDefault();
+
+		//TODO enter validation for password
+		try {
+			const url =
+				'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
+
+			const response = await axios.post(url, {
+				email: userData.email,
+				password: userData.password,
+				returnSecureToke: true
+			});
+			console.log(response);
+			setUserData({
+				email: '',
+				password: '',
+				fullName: '',
+				address: '',
+				mobile: '',
+				gender: '',
+				dob: null,
+				doj: null,
+				type: ''
+			});
+			//TODO add notification feature for proper messages
+			if (response.status === 200) {
+				console.log('user created successfully'); //TODO notification
+				navigate('/login');
+			}
+		} catch (error) {
+			console.log(error); //TODO notification
+		}
 	};
-	const typeSelectHandler = (e) => {
-		console.log(e.target.value);
-	};
+
 	return (
 		<Row className="mt-5">
 			<Col lg={6} md={6} sm={12} className="p-5 m-auto shadow-sm rounded-lg">
-				<Form onSubmit={onSubmitHandler}>
+				<Form onSubmit={submitHandler}>
 					<FloatingLabel controlId="floatingInputEmail" label="Email address" className="mb-3">
-						<Form.Control type="email" placeholder="name@example.com" />
+						<Form.Control
+							value={userData.email}
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, email: e.target.value };
+								});
+							}}
+							type="email"
+							placeholder="name@example.com"
+						/>
 					</FloatingLabel>
 
 					<FloatingLabel controlId="floatingInputName" label="Full Name" className="mb-3">
-						<Form.Control type="text" placeholder="Password" />
+						<Form.Control
+							value={userData.fullName}
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, fullName: e.target.value };
+								});
+							}}
+							type="text"
+							placeholder="Password"
+						/>
 					</FloatingLabel>
 
 					<FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
-						<Form.Control type={showPassword} placeholder="Password" />
+						<Form.Control
+							value={userData.password}
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, password: e.target.value };
+								});
+							}}
+							type={showPassword}
+							placeholder="Password"
+						/>
 					</FloatingLabel>
 					<Form.Group className="mb-3" controlId="formBasicCheckbox">
 						<Form.Check
@@ -51,14 +119,39 @@ const RegistrationForm = (props) => {
 					</Form.Group>
 
 					<FloatingLabel controlId="floatingInputAddress" label="Address" className="mb-3">
-						<Form.Control type="email" placeholder="name@example.com" />
+						<Form.Control
+							type="text"
+							value={userData.address}
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, address: e.target.value };
+								});
+							}}
+							placeholder="name@example.com"
+						/>
 					</FloatingLabel>
 
 					<FloatingLabel controlId="floatingInputMobile" label="Mobile" className="mb-3">
-						<Form.Control type="email" placeholder="name@example.com" />
+						<Form.Control
+							type="number"
+							value={userData.mobile}
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, mobile: e.target.value };
+								});
+							}}
+							placeholder="name@example.com"
+						/>
 					</FloatingLabel>
 					<FloatingLabel className="mb-3" controlId="floatingSelect" label="Gender">
-						<Form.Select aria-label="Floating label select example">
+						<Form.Select
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, gender: e.target.value };
+								});
+							}}
+							aria-label="Floating label select example"
+						>
 							<option>Select</option>
 							<option value="male">Male</option>
 							<option value="female">Female</option>
@@ -68,26 +161,37 @@ const RegistrationForm = (props) => {
 					<DatePicker
 						id="dob"
 						className="form-control mb-3"
-						selected={selectedDOB}
+						selected={userData.dob}
 						onChange={(date) => {
-							setSelectedDOB(date);
+							setUserData((prev) => {
+								return { ...prev, dob: date };
+							});
 						}}
 					/>
 					<label htmlFor="doj">Date of Joining</label>
 					<DatePicker
 						id="doj"
 						className="form-control mb-3"
-						selected={selectedDOJ}
+						selected={userData.doj}
 						onChange={(date) => {
-							setSelectedDOJ(date);
+							setUserData((prev) => {
+								return { ...prev, doj: date };
+							});
 						}}
 					/>
-					<FloatingLabel className="mb-3" controlId="floatingSelectType" label="Gender">
-						<Form.Select onChange={typeSelectHandler} aria-label="Floating label select example">
+					<FloatingLabel className="mb-3" controlId="floatingSelectType" label="Select Position">
+						<Form.Select
+							onChange={(e) => {
+								setUserData((prev) => {
+									return { ...prev, type: e.target.value };
+								});
+							}}
+							aria-label="Floating label select example"
+						>
 							<option>Select</option>
-							<option value="Admin">Admin</option>
-							<option value="HOD">HOD</option>
-							<option value="Teacher">Teacher</option>
+							<option value="1">Admin</option>
+							<option value="2">HOD</option>
+							<option value="3">Teacher</option>
 						</Form.Select>
 					</FloatingLabel>
 					<Container className="mt-3 p-0">

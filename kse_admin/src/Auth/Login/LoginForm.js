@@ -2,19 +2,40 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+// import {loginUsing}
 const LoginForm = (props) => {
 	const [ email, setEmail ] = useState('');
-	const [ showPassword, setShowPassword ] = useState('password');
 	const [ password, setPassword ] = useState('');
-
+	const [ showPassword, setShowPassword ] = useState('password');
 	const navigate = useNavigate();
-
 	const navigateToRegister = () => {
 		navigate('/register');
 	};
-	const loginSubmitHandler = (e) => {
+	const loginSubmitHandler = async (e) => {
 		e.preventDefault();
-		console.log(email, password);
+		//TODO enter validation for password
+		try {
+			const url =
+				'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
+
+			const response = await axios.post(url, {
+				email: email,
+				password: password,
+				returnSecureToke: true
+			});
+			console.log(response);
+
+			//TODO add notification feature for proper messages
+			if (response.status === 200) {
+				console.log('logged in'); //TODO notification
+				navigate('/login');
+			}
+			setEmail('');
+			setPassword('');
+		} catch (error) {
+			console.log(error); //TODO notification
+		}
 	};
 
 	return (

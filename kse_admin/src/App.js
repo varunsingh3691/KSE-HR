@@ -1,28 +1,25 @@
 import './App.css';
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Login from './Auth/Login/Login';
 import Register from './Auth/Register/Register';
+import Home from './components/Home/Home';
+import Layout from './components/Layout';
+import Missing from './components/Missing';
 function App() {
-	useEffect(() => {
-		return () => {
-			loading();
-		};
-	}, []);
-
-	const loading = (props) => {
-		return <div> i am loading</div>;
-	};
-
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<Login />} />
+		<Routes>
+			<Route path="/" element={<Layout />}>
+				{/* public routes */}
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
-			</Routes>
-		</BrowserRouter>
+				{/* protected routes */}
+				<Route path="/Home" element={<Home />} />
+				{/*catch all others*/}
+				<Route path="/*" element={<Missing />} />
+			</Route>
+		</Routes>
 	);
 }
 
