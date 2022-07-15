@@ -5,6 +5,6 @@ import Layout from '../../components/Layout';
 const LoginProtected = (props) => {
 	// const location = useLocation();
 	const authCtx = useContext(AuthContext);
-	return authCtx.isLoggedIn ? <Layout /> : <Navigate to="/" replace />;
+	return !authCtx.isLoggedIn ? <Layout /> : <Navigate to="/home" replace />;
 };
 export default LoginProtected;
