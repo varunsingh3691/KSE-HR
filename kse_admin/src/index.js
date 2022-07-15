@@ -5,14 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AuthContextProvider } from './Auth/store/auth-context';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/*" element={<App />} />
-			</Routes>
-		</BrowserRouter>
+		<AuthContextProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/*" element={<App />} />
+				</Routes>
+			</BrowserRouter>
+		</AuthContextProvider>
 	</React.StrictMode>
 );
 

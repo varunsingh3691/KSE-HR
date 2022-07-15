@@ -1,24 +1,22 @@
 import './App.css';
 import React from 'react';
-
 import { Route, Routes } from 'react-router-dom';
 import Login from './Auth/Login/Login';
-import Register from './Auth/Register/Register';
 import Home from './components/Home/Home';
-import Layout from './components/Layout';
+import Register from './Auth/Register/Register';
+import LoginProtected from './Auth/Protection/LoginProtected';
 import Missing from './components/Missing';
 function App() {
 	return (
 		<Routes>
-			<Route path="/" element={<Layout />}>
-				{/* public routes */}
-				<Route path="/" element={<Login />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/register" element={<Register />} />
-				{/* protected routes */}
-				<Route path="/Home" element={<Home />} />
-				{/*catch all others*/}
-				<Route path="/*" element={<Missing />} />
+			{/* public routes */}
+			<Route path="/" element={<Login />} />
+			<Route path="/login" element={<Login />} />
+			<Route path="/register" element={<Register />} />
+			<Route path="/*" element={<Missing />} />
+			{/* protected routes */}
+			<Route element={<LoginProtected />}>
+				<Route path="/home" element={<Home />} />
 			</Route>
 		</Routes>
 	);

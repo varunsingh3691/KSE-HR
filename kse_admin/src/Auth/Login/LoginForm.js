@@ -1,8 +1,9 @@
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AuthContext from '../store/auth-context';
 // import {loginUsing}
 const LoginForm = (props) => {
 	const [ email, setEmail ] = useState('');
@@ -12,6 +13,7 @@ const LoginForm = (props) => {
 	const navigateToRegister = () => {
 		navigate('/register');
 	};
+	const authCtx = useContext(AuthContext);
 	const loginSubmitHandler = async (e) => {
 		e.preventDefault();
 		//TODO enter validation for password
@@ -28,8 +30,9 @@ const LoginForm = (props) => {
 
 			//TODO add notification feature for proper messages
 			if (response.status === 200) {
+				authCtx.login(response.data.idToken);
 				console.log('logged in'); //TODO notification
-				navigate('/login');
+				navigate('/home ');
 			}
 			setEmail('');
 			setPassword('');
