@@ -2,13 +2,16 @@ import { Button, Col, Form, Row, Container } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import DatePicker from 'react-datepicker';
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState, useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Register.css';
-import axios from 'axios';
-import AuthContext from '../store/auth-context';
 
+import AuthContext from '../store/auth-context';
+import { auth, db } from '../../firebase-config';
+import { doc, setDoc } from 'firebase/firestore';
 const RegistrationForm = (props) => {
+	const [ showPassword, setShowPassword ] = useState('password');
 	const [ userData, setUserData ] = useState({
 		email: '',
 		password: '',
@@ -21,8 +24,7 @@ const RegistrationForm = (props) => {
 		type: ''
 	});
 	const navigate = useNavigate();
-	const [ showPassword, setShowPassword ] = useState('password');
-
+	// const currentCollection = collection(db, 'Users');
 	const navigateToLogin = () => {
 		navigate('/login');
 	};
@@ -35,20 +37,25 @@ const RegistrationForm = (props) => {
 		//TODO add handling for null values in dropdowns
 		//TODO enter validation for password
 		try {
-			const url =
-				'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
-
-			const response = await axios.post(url, {
-				email: userData.email,
-				password: userData.password,
-				returnSecureToke: true
-			});
-			if (response.status === 200) {
-				authCtx.register(response.data.idToken);
-				console.log('logged in'); //TODO notification
-				navigate('/home ');
+			const response = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+			if (response) {
+				authCtx.register(response._tokenResponse.idToken);
 			}
-			console.log(response);
+			const userDetailsStored = await setDoc(doc(db, 'Users', response.user.uid), {
+				address: userData.address,
+				date_of_birth: userData.dob,
+				date_of_joining: userData.doj,
+				email: userData.email,
+				full_name: userData.fullName,
+				gender: userData.gender,
+				is_valid: true,
+				type: userData.type,
+				user_id: response.user.uid
+			});
+			if (userDetailsStored) {
+				console.log('User Details Stored'); //TODO notification
+			}
+
 			setUserData({
 				email: '',
 				password: '',
@@ -62,7 +69,7 @@ const RegistrationForm = (props) => {
 			});
 			//TODO add notification feature for proper messages
 		} catch (error) {
-			console.log(error); //TODO notification
+			console.log(error); //TODO notification !important
 		}
 	};
 
