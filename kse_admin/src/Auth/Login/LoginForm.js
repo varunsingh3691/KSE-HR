@@ -2,9 +2,10 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { auth } from '../../firebase-config';
 import AuthContext from '../store/auth-context';
-// import {loginUsing}
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 const LoginForm = (props) => {
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
@@ -18,22 +19,35 @@ const LoginForm = (props) => {
 		e.preventDefault();
 		//TODO enter validation for password
 		try {
-			const url =
-				'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
+			signInWithEmailAndPassword(auth, email, password)
+				.then((creds) => {
+					const tokenData = creds._tokenResponse;
 
-			const response = await axios.post(url, {
-				email: email,
-				password: password,
-				returnSecureToke: true
-			});
-			console.log(response);
+					console.log(tokenData.expiresIn);
+					const expirationTime = new Date(new Date().getTime() + +tokenData.expiresIn * 1000);
+					console.log(expirationTime);
+					authCtx.login(tokenData.idToken, expirationTime.toISOString());
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+			// const url =
+			// 	'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
 
-			//TODO add notification feature for proper messages
-			if (response.status === 200) {
-				authCtx.login(response.data.idToken);
-				console.log('logged in'); //TODO notification
-				navigate('/home ');
-			}
+			// const response = await axios.post(url, {
+			// 	email: email,
+			// 	password: password,
+			// 	returnSecureToke: true
+			// });
+			// console.log(response);
+
+			// //TODO add notification feature for proper messages
+			// if (response.status === 200) {
+			// 	authCtx.login(response.data.idToken);
+			// 	console.log('logged in');
+			// 	navigate('/home ');
+			// }
+
 			setEmail('');
 			setPassword('');
 		} catch (error) {
