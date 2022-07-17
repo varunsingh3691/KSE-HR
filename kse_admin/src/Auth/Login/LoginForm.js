@@ -22,11 +22,9 @@ const LoginForm = (props) => {
 			signInWithEmailAndPassword(auth, email, password)
 				.then((creds) => {
 					const tokenData = creds._tokenResponse;
-
-					console.log(tokenData.expiresIn);
 					const expirationTime = new Date(new Date().getTime() + +tokenData.expiresIn * 1000);
-					console.log(expirationTime);
 					authCtx.login(tokenData.idToken, expirationTime.toISOString());
+					navigate('/home');
 				})
 				.catch((error) => {
 					console.log(error);
