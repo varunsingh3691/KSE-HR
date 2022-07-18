@@ -20,6 +20,7 @@ function App() {
 			{/* protected routes */}
 			<Route element={<LoginProtected />}>
 				<Route path="/home" element={<Home />} />
+				{/*Define 3 routes as of now TeachersHome HODsHome and AdminsHome */}
 			</Route>
 		</Routes>
 	);

@@ -2,10 +2,10 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase-config';
+import { auth, db } from '../../firebase-config';
 import AuthContext from '../store/auth-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-
+import { doc, getDoc } from 'firebase/firestore';
 const LoginForm = (props) => {
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
@@ -19,33 +19,37 @@ const LoginForm = (props) => {
 		e.preventDefault();
 		//TODO enter validation for password
 		try {
-			signInWithEmailAndPassword(auth, email, password)
-				.then((creds) => {
-					const tokenData = creds._tokenResponse;
-					const expirationTime = new Date(new Date().getTime() + +tokenData.expiresIn * 1000);
-					authCtx.login(tokenData.idToken, expirationTime.toISOString());
-					navigate('/home');
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-			// const url =
-			// 	'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAsSFz0MgqjCmQOsOy-4oVyS_ude0yiRgU';
+			const response = await signInWithEmailAndPassword(auth, email, password);
+			console.log(response);
+			const tokenData = response._tokenResponse;
+			const expirationTime = new Date(new Date().getTime() + +tokenData.expiresIn * 1000);
 
-			// const response = await axios.post(url, {
-			// 	email: email,
-			// 	password: password,
-			// 	returnSecureToke: true
-			// });
-			// console.log(response);
+			const docRef = doc(db, 'Users', email);
+			const userVerificaion = await getDoc(docRef);
+			if (userVerificaion.exists()) {
+				console.log('Document data:', userVerificaion.data());
+			} else {
+				console.log('No such document!'); //TODO no such user notification
+			}
+			const userDetails = userVerificaion.data();
+			console.log(userDetails.user_ID, userDetails.teaching_dept, userDetails.user_type_ID);
+			authCtx.storeData(userDetails.user_ID, userDetails.teaching_dept, userDetails.user_type_ID);
+			authCtx.login(tokenData.idToken, expirationTime.toISOString());
+			if (userDetails.user_type_ID === 2) {
+				const hodDocRef = doc(db, 'HOD', email);
+				const hodVerification = await getDoc(hodDocRef);
+				if (hodVerification.exists()) {
+					console.log('Document data:', userVerificaion.data());
+				} else {
+					console.log('No such document!'); //TODO no such user hod contact support
+				}
+				const hodDetails = hodVerification.data();
+				console.log(hodDetails);
+				localStorage.setItem('HOD', hodDetails.hod_of_department);
+			}
+			navigate('/home');
 
 			// //TODO add notification feature for proper messages
-			// if (response.status === 200) {
-			// 	authCtx.login(response.data.idToken);
-			// 	console.log('logged in');
-			// 	navigate('/home ');
-			// }
-
 			setEmail('');
 			setPassword('');
 		} catch (error) {

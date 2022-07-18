@@ -4,7 +4,8 @@ const AuthContext = createContext({
 	token: '',
 	isLoggedIn: false,
 	login: (token) => {},
-	logout: () => {}
+	logout: () => {},
+	storeData: () => {}
 });
 const calculateRemainingTime = (expirationTime) => {
 	const currentTime = new Date().getTime();
@@ -52,8 +53,16 @@ export const AuthContextProvider = (props) => {
 		logoutTimer = setTimeout(logoutHandler, remainingTime);
 	};
 	const registerHandler = (token, expirationTime) => {
-		setToken(token);
-		localStorage.setItem('token', token);
+		// setToken(token);
+		// localStorage.setItem('token', token);
+		// localStorage.setItem('expirationTime', expirationTime);
+		// const remainingTime = calculateRemainingTime(expirationTime);
+		// logoutTimer = setTimeout(logoutHandler, remainingTime);
+	};
+	const storeDataHandler = (userID, teachingDept, userTypeID) => {
+		localStorage.setItem('userID', userID);
+		localStorage.setItem('teachingDept', teachingDept);
+		localStorage.setItem('userTypeID', userTypeID);
 	};
 	useEffect(
 		() => {
@@ -69,7 +78,8 @@ export const AuthContextProvider = (props) => {
 		isLoggedIn: userIsLoggedIn,
 		login: loginHandler,
 		logout: logoutHandler,
-		register: registerHandler
+		register: registerHandler,
+		storeData: storeDataHandler
 	};
 	return <AuthContext.Provider value={contextValue}>{props.children}</AuthContext.Provider>;
 };
