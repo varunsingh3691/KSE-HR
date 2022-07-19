@@ -1,96 +1,168 @@
-import React, { useState, useContext } from 'react';
-
-//import react pro sidebar components
-import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarFooter, SidebarContent } from 'react-pro-sidebar';
-
-//import icons from react icons
-import { FiLogOut, FiArrowLeftCircle, FiArrowRightCircle } from 'react-icons/fi';
-import { GoDashboard } from 'react-icons/go';
-import { FcLeave } from 'react-icons/fc';
-import { FiUsers } from 'react-icons/fi';
-import { FiSettings } from 'react-icons/fi';
-import { BsFillCalendarCheckFill } from 'react-icons/bs';
-import { FaBuromobelexperte } from 'react-icons/fa';
-//import sidebar css from react-pro-sidebar module and our custom css
-import 'react-pro-sidebar/dist/css/styles.css';
+import { NavLink } from 'react-router-dom';
+import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from 'react-icons/fa';
+import { MdMessage } from 'react-icons/md';
+import { BiAnalyse, BiSearch } from 'react-icons/bi';
+import { BiCog } from 'react-icons/bi';
+import { AiFillHeart, AiTwotoneFileExclamation } from 'react-icons/ai';
+import { BsCartCheck } from 'react-icons/bs';
+import { Fragment, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import SidebarMenu from './SidebarMenu';
 import './Sidebar.css';
-import AuthContext from '../../Auth/store/auth-context';
-
-const items = [
+const routes = [
 	{
+		path: '/',
 		name: 'Dashboard',
-		icon: <GoDashboard />,
-		isActive: true
+		icon: <FaHome />
 	},
 	{
-		name: 'On Leaves',
-		icon: <FcLeave />,
-		isActive: false
-	},
-	{
+		path: '/users',
 		name: 'Users',
-		icon: <FiUsers />,
-		isActive: false
+		icon: <FaUser />
 	},
 	{
-		name: 'Settings',
-		icon: <FiSettings />,
-		isActive: false
+		path: '/messages',
+		name: 'Messages',
+		icon: <MdMessage />
 	},
 	{
-		name: 'Leaves',
-		icon: <BsFillCalendarCheckFill />,
-		isActive: false
+		path: '/analytics',
+		name: 'Analytics',
+		icon: <BiAnalyse />
 	},
 	{
-		name: 'Apply',
-		icon: <FaBuromobelexperte />,
-		isActive: false
-	}
-];
-const Sidebar = () => {
-	const [ menuCollapse, setMenuCollapse ] = useState(false);
+		path: '/order',
+		name: 'Order',
+		icon: <BsCartCheck />
+	},
 
-	const authCtx = useContext(AuthContext);
-	//create a custom function that will change menucollapse state from false to true and true to fals
-	const menuIconClick = () => {
-		//condition checking to change state from true to false and vice versa
-		menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);
+	{
+		path: '/saved',
+		name: 'Saved',
+		icon: <AiFillHeart />
+	}
+	// {
+	// 	path: '/settings',
+	// 	name: 'Settings',
+	// 	icon: <BiCog />,
+	// 	exact: true,
+	// 	subRoutes: [
+	// 		{
+	// 			path: '/settings/profile',
+	// 			name: 'Profile ',
+	// 			icon: <FaUser />
+	// 		},
+	// 		{
+	// 			path: '/settings/2fa',
+	// 			name: '2FA',
+	// 			icon: <FaLock />
+	// 		},
+	// 		{
+	// 			path: '/settings/billing',
+	// 			name: 'Billing',
+	// 			icon: <FaMoneyBill />
+	// 		}
+	// 	]
+	// }
+];
+
+const Sidebar = ({ children }) => {
+	const [ isOpen, setIsOpen ] = useState(false);
+	const toggle = () => setIsOpen(!isOpen);
+	const showAnimation = {
+		hidden: {
+			width: 0,
+			opacity: 0,
+			transition: {
+				duration: 0.5
+			}
+		},
+		show: {
+			opacity: 1,
+			width: 'auto',
+			transition: {
+				duration: 0.5
+			}
+		}
 	};
-	const menuItems = items.map((item) => {
-		return (
-			<MenuItem active={item.isActive} icon={item.icon}>
-				{item.name}
-			</MenuItem>
-		);
-	});
-	const logoutHandler = () => {
-		authCtx.logout();
-	};
+
 	return (
-		<div id="header">
-			<ProSidebar collapsed={menuCollapse}>
-				<SidebarHeader>
-					<div className="logotext">
-						{/* small and big change using menucollapse state */}
-						<p>{menuCollapse ? 'Logo' : 'Big Logo'}</p>
+		<Fragment>
+			<div className="main-container">
+				<motion.div
+					animate={{
+						width: isOpen ? '200px' : '45px',
+
+						transition: {
+							duration: 0.5,
+							type: 'spring',
+							damping: 10
+						}
+					}}
+					className={`sidebar `}
+				>
+					<div className="top_section">
+						<AnimatePresence>
+							{isOpen && (
+								<motion.h1
+									variants={showAnimation}
+									initial="hidden"
+									animate="show"
+									exit="hidden"
+									className="logo"
+								>
+									KSE
+								</motion.h1>
+							)}
+						</AnimatePresence>
+
+						<div className="bars">
+							<FaBars onClick={toggle} />
+						</div>
 					</div>
-					<div className="closemenu" onClick={menuIconClick}>
-						{menuCollapse ? <FiArrowRightCircle /> : <FiArrowLeftCircle />}
-					</div>
-				</SidebarHeader>
-				<SidebarContent>
-					<Menu iconShape="square">{menuItems}</Menu>
-				</SidebarContent>
-				<SidebarFooter>
-					<Menu iconShape="square">
-						<MenuItem onClick={logoutHandler} icon={<FiLogOut />}>
-							Logout
-						</MenuItem>
-					</Menu>
-				</SidebarFooter>
-			</ProSidebar>
-		</div>
+
+					<section className="routes">
+						{routes.map((route, index) => {
+							if (route.subRoutes) {
+								return (
+									<SidebarMenu
+										setIsOpen={setIsOpen}
+										route={route}
+										showAnimation={showAnimation}
+										isOpen={isOpen}
+									/>
+								);
+							}
+
+							return (
+								<NavLink
+									to={route.path}
+									key={index}
+									className={(navData) => (navData.isActive ? 'link active' : 'link')}
+								>
+									<div className="icon">{route.icon}</div>
+									<AnimatePresence>
+										{isOpen && (
+											<motion.div
+												variants={showAnimation}
+												initial="hidden"
+												animate="show"
+												exit="hidden"
+												className="link_text"
+											>
+												{route.name}
+											</motion.div>
+										)}
+									</AnimatePresence>
+								</NavLink>
+							);
+						})}
+					</section>
+				</motion.div>
+
+				<main>{children}</main>
+			</div>
+		</Fragment>
 	);
 };
 

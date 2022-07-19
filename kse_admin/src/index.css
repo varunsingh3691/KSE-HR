@@ -9,6 +9,7 @@ body {
 }
 @media only screen and (max-width: 720px) {
   html {
+    height: 94vh;
     overflow: scroll;
   }
 }

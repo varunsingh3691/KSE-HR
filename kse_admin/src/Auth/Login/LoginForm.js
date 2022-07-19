@@ -20,15 +20,13 @@ const LoginForm = (props) => {
 		//TODO enter validation for password
 		try {
 			const response = await signInWithEmailAndPassword(auth, email, password);
-			console.log(response);
+
 			const tokenData = response._tokenResponse;
 			const expirationTime = new Date(new Date().getTime() + +tokenData.expiresIn * 1000);
 
 			const docRef = doc(db, 'Users', email);
 			const userVerificaion = await getDoc(docRef);
-			if (userVerificaion.exists()) {
-				console.log('Document data:', userVerificaion.data());
-			} else {
+			if (!userVerificaion.exists()) {
 				console.log('No such document!'); //TODO no such user notification
 			}
 			const userDetails = userVerificaion.data();
@@ -38,9 +36,7 @@ const LoginForm = (props) => {
 			if (userDetails.user_type_ID === 2) {
 				const hodDocRef = doc(db, 'HOD', email);
 				const hodVerification = await getDoc(hodDocRef);
-				if (hodVerification.exists()) {
-					console.log('Document data:', userVerificaion.data());
-				} else {
+				if (!hodVerification.exists()) {
 					console.log('No such document!'); //TODO no such user hod contact support
 				}
 				const hodDetails = hodVerification.data();

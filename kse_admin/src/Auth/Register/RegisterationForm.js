@@ -3,11 +3,10 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import DatePicker from 'react-datepicker';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Register.css';
-import { useEffect } from 'react';
-import AuthContext from '../store/auth-context';
+
 import { auth, db } from '../../firebase-config';
 import { doc, setDoc, getDocs, collection } from 'firebase/firestore';
 const RegistrationForm = (props) => {
@@ -38,7 +37,6 @@ const RegistrationForm = (props) => {
 		};
 		fetchData();
 	}, []);
-	const authCtx = useContext(AuthContext);
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
@@ -48,7 +46,6 @@ const RegistrationForm = (props) => {
 
 		try {
 			if (isHOD) {
-				console.log(preExistingHODs);
 				preExistingHODs.forEach((HOD) => {
 					if (HOD.hod_of_department === userData.HODDept && HOD.is_valid) {
 						throw new Error('HOD already assigned');

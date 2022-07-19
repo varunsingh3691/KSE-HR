@@ -16,11 +16,10 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
 			</Route>
-			<Route path="/*" element={<Missing />} />
 			{/* protected routes */}
 			<Route element={<LoginProtected />}>
-				<Route path="/home" element={<Home />} />
-				{/*Define 3 routes as of now TeachersHome HODsHome and AdminsHome */}
+				<Route path="/users" element={<Home />} />
+				<Route path="/*" element={<Missing />} />
 			</Route>
 		</Routes>
 	);
