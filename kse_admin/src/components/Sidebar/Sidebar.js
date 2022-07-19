@@ -1,20 +1,14 @@
 import { NavLink } from 'react-router-dom';
-import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from 'react-icons/fa';
+import { FaBars, FaHome, FaUser } from 'react-icons/fa';
 import { MdMessage } from 'react-icons/md';
-import { BiAnalyse, BiSearch } from 'react-icons/bi';
-import { BiCog } from 'react-icons/bi';
-import { AiFillHeart, AiTwotoneFileExclamation } from 'react-icons/ai';
+import { BiAnalyse } from 'react-icons/bi';
+import { AiFillHeart } from 'react-icons/ai';
 import { BsCartCheck } from 'react-icons/bs';
 import { Fragment, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import SidebarMenu from './SidebarMenu';
 import './Sidebar.css';
 const routes = [
-	{
-		path: '/',
-		name: 'Dashboard',
-		icon: <FaHome />
-	},
 	{
 		path: '/users',
 		name: 'Users',

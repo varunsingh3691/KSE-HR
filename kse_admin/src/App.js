@@ -18,8 +18,10 @@ function App() {
 			</Route>
 			{/* protected routes */}
 			<Route element={<LoginProtected />}>
-				<Route path="/users" element={<Home />} />
 				<Route path="/*" element={<Missing />} />
+				<Route path="/users" element={<Home />} />
+				<Route path="/users" element={<Home />} />
+				<Route path="/users" element={<Home />} />
 			</Route>
 		</Routes>
 	);
