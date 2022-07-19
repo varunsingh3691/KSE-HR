@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FaBars, FaHome, FaUser } from 'react-icons/fa';
+import { FaBars, FaUserAlt } from 'react-icons/fa';
 import { MdMessage } from 'react-icons/md';
 import { BiAnalyse } from 'react-icons/bi';
 import { AiFillHeart } from 'react-icons/ai';
@@ -12,28 +12,28 @@ const routes = [
 	{
 		path: '/users',
 		name: 'Users',
-		icon: <FaUser />
+		icon: <FaUserAlt size={30} />
 	},
 	{
 		path: '/messages',
 		name: 'Messages',
-		icon: <MdMessage />
+		icon: <MdMessage size={30} />
 	},
 	{
 		path: '/analytics',
 		name: 'Analytics',
-		icon: <BiAnalyse />
+		icon: <BiAnalyse size={30} />
 	},
 	{
 		path: '/order',
 		name: 'Order',
-		icon: <BsCartCheck />
+		icon: <BsCartCheck size={30} />
 	},
 
 	{
 		path: '/saved',
 		name: 'Saved',
-		icon: <AiFillHeart />
+		icon: <AiFillHeart size={30} />
 	}
 	// {
 	// 	path: '/settings',
@@ -85,7 +85,7 @@ const Sidebar = ({ children }) => {
 			<div className="main-container">
 				<motion.div
 					animate={{
-						width: isOpen ? '200px' : '45px',
+						width: isOpen ? '200px' : '50px',
 
 						transition: {
 							duration: 0.5,
@@ -111,7 +111,7 @@ const Sidebar = ({ children }) => {
 						</AnimatePresence>
 
 						<div className="bars">
-							<FaBars onClick={toggle} />
+							<FaBars size={30} onClick={toggle} />
 						</div>
 					</div>
 
@@ -134,7 +134,7 @@ const Sidebar = ({ children }) => {
 									key={index}
 									className={(navData) => (navData.isActive ? 'link active' : 'link')}
 								>
-									<div className="icon">{route.icon}</div>
+									<div className=" icon">{route.icon}</div>
 									<AnimatePresence>
 										{isOpen && (
 											<motion.div

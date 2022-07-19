@@ -13,7 +13,7 @@ main {
 
 /* Sidebar */
 .sidebar {
-  background: rgb(189, 192, 6);
+  background: rgb(226, 223, 12);
   color: white;
   height: 100vh;
   overflow-y: auto;
@@ -30,7 +30,10 @@ main {
   line-height: 0;
 }
 .bars {
-  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: content;
+
 }
 .hide {
   display: none;
@@ -43,14 +46,6 @@ main {
   height: 30px;
   padding: 10px;
 }
-.search input {
-  border: none;
-  margin-left: 10px;
-  border-radius: 5px;
-  background: rgb(238, 238, 238);
-
-  color: white;
-}
 
 .routes {
   margin-top: 15px;
@@ -62,6 +57,7 @@ main {
   display: flex;
   color: white;
   gap: 10px;
+  text-decoration: none;
   padding: 5px 10px;
   border-right: 4px solid transparent;
   transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
@@ -77,9 +73,11 @@ main {
 }
 .link_text {
   white-space: nowrap;
-  font-size: 15px;
+  font-size: 20px;
 }
-
+.icon{
+  display: flex;
+}
 .menu {
   display: flex;
   color: white;
