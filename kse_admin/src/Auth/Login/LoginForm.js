@@ -30,7 +30,7 @@ const LoginForm = (props) => {
 				console.log('No such document!'); //TODO no such user notification
 			}
 			const userDetails = userVerificaion.data();
-			console.log(userDetails.user_ID, userDetails.teaching_dept, userDetails.user_type_ID);
+
 			authCtx.storeData(userDetails.user_ID, userDetails.teaching_dept, userDetails.user_type_ID);
 			authCtx.login(tokenData.idToken, expirationTime.toISOString());
 			if (userDetails.user_type_ID === 2) {
